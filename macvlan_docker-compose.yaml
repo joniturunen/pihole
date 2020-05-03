@@ -1,0 +1,48 @@
+version: "2"
+# https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
+# https://gitlab.com/tonyklawrence/files.tonylawrence.com/raw/master/synology/pihole/compose/docker-compose.yaml
+# http://tonylawrence.com/posts/unix/synology/free-your-synology-ports/
+# https://docs.pi-hole.net/docker/DHCP/
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    hostname: pihole
+    domainname: local
+    mac_address: 00:00:2b:2f:cd:5c
+    cap_add:
+      - NET_ADMIN
+    networks:
+      pihole_network:
+        ipv4_address: 192.168.0.199
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+    ports:
+      - 443/tcp
+      - 53/tcp
+      - 53/udp
+      - 67/udp
+      - 80/tcp
+    environment:
+      ServerIP: 192.168.0.199
+      VIRTUAL_HOST: pihole.local
+      TZ: 'Europe/Helsinki'
+      WEBPASSWORD: ${ADMIN_PASS}
+    # Volumes store your data between container upgrades
+    volumes:
+       - './etc-pihole/:/etc/pihole/'
+       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+       - './var-log/pihole.log:/var/log/pihole.log'
+    restart: unless-stopped
+
+networks:
+  pihole_network:
+    driver: macvlan
+    driver_opts:
+      parent: eth0
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
+          gateway: 192.168.0.1
+          ip_range: 192.168.0.192/28

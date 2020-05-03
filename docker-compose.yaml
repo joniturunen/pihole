@@ -1,0 +1,28 @@
+version: "2"
+# https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
+# https://gitlab.com/tonyklawrence/files.tonylawrence.com/raw/master/synology/pihole/compose/docker-compose.yaml
+# http://tonylawrence.com/posts/unix/synology/free-your-synology-ports/
+# https://docs.pi-hole.net/docker/DHCP/
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    hostname: pihole
+    domainname: ${DOMAIN}
+    cap_add:
+      - NET_ADMIN
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+    network_mode: host
+    environment:
+      ServerIP: ${IP_ADDR}
+      VIRTUAL_HOST: pihole.local
+      TZ: 'Europe/Helsinki'
+      WEBPASSWORD: ${ADMIN_PASS}
+    # Volumes store your data between container upgrades
+    volumes:
+       - './etc-pihole/:/etc/pihole/'
+       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+       - './var-log/pihole.log:/var/log/pihole.log'
+    restart: unless-stopped
