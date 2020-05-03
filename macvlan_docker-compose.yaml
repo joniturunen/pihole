@@ -26,7 +26,7 @@ services:
       - 80/tcp
     environment:
       ServerIP: 192.168.0.199
-      VIRTUAL_HOST: pihole.local
+      VIRTUAL_HOST: pihole.${DOMAIN}
       TZ: 'Europe/Helsinki'
       WEBPASSWORD: ${ADMIN_PASS}
     # Volumes store your data between container upgrades

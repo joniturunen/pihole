@@ -17,7 +17,7 @@ services:
     network_mode: host
     environment:
       ServerIP: ${IP_ADDR}
-      VIRTUAL_HOST: pihole.local
+      VIRTUAL_HOST: pihole.${DOMAIN}
       TZ: 'Europe/Helsinki'
       WEBPASSWORD: ${ADMIN_PASS}
     # Volumes store your data between container upgrades
